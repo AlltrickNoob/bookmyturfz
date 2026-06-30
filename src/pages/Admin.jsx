@@ -59,7 +59,7 @@ const SPORTS = ["cricket", "football", "basketball", "badminton"];
 export const Admin = () => {
   const { user, logout } = useUserAuth();
   const toast = useToast();
-  const adminEmail = process.env.REACT_APP_ADMIN_EMAIL || "ansariabdullah11112222@gmail.com";
+  const adminEmail = process.env.REACT_APP_ADMIN_EMAIL;
 
   const isSuperAdmin = user && user.email === adminEmail;
   const canEdit = isSuperAdmin;
