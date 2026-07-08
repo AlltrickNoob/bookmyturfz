@@ -116,23 +116,24 @@ export const Turfdata = (prop) => {
           allData = turfData.docs.map((doc) => ({ ...doc.data(), id: doc.id, sport: turf }));
         }
 
-        let filterData = allData;
-        // Filtering logic:
-        // 1. If both are 'All', show everything (no filter)
-        // 2. If city is specific and turf is 'All', show all sports for that city
-        // 3. If turf is specific and city is 'All', show all locations for that sport
-        // 4. If both are specific, show only that sport in that city
+       let filterData = allData;
 
-        if (search && search.trim().length > 0) {
+// Sport filter
+if (turf !== "All") {
+  filterData = filterData.filter((d) => d.sport === turf);
+}
+
+// Search filter
+if (search && search.trim()) {
   const query = search.toLowerCase().trim();
 
-filterData = filterData.filter((d) => {
-  return (
-    d.name?.toLowerCase().includes(query) ||
-    d.address?.toLowerCase().includes(query) ||
-    d.sport?.toLowerCase().includes(query)
-  );
-});
+  filterData = filterData.filter((d) => {
+    return (
+      d.name?.toLowerCase().includes(query) ||
+      d.address?.toLowerCase().includes(query) ||
+      d.sport?.toLowerCase().includes(query)
+    );
+  });
 }
         // else: both 'All', show everything
 
@@ -144,7 +145,7 @@ filterData = filterData.filter((d) => {
       }
     };
     getData();
-  }, [turf, city]);
+  }, [turf, search]);
   console.log(turfName);
   //  console.log(time,element)
    localStorage.setItem("time",time)
