@@ -3,28 +3,21 @@ import turfbg from "../images/turfbg.jpg";
 import logo from "../images/navlogo.png";
 import "../style/turf.css";
 import { MdLocationOn } from "react-icons/md";
-import { Select } from "@chakra-ui/react";
+import { Select, Input } from "@chakra-ui/react";
 import { db } from "../firebase-config/config";
 import { collection, getDocs } from "firebase/firestore";
 import { useUserAuth } from "../context/Authcontext";
 import { PopoverProfile } from "./Popover";
 
 export const TurfNav = (prop) => {
-  const { setTurf, onCityChange, city } = prop;
-  const [cities, setCities] = useState(["All"]);
+  const { setTurf, onCityChange, search } = prop;
   const [allSports, setAllSports] = useState(["cricket", "football", "basketball", "badminton"]);
   // Removed unused docsBySport
 
   const [selectedSport, setSelectedSport] = useState("All");
   useEffect(() => {
     // Fetch all sports collections and gather all unique cities and sports (one-time fetch)
-    const fetchDropdowns = async () => {
-      const sportsList = ["cricket", "football", "basketball", "badminton"];
-      const docsBySportTemp = {};
-      for (const s of sportsList) {
-        const snap = await getDocs(collection(db, s));
-        docsBySportTemp[s] = snap.docs.map((doc) => ({ ...doc.data(), id: doc.id, sport: s }));
-      }
+  
       // recompute city set and sports set
       const citySet = new Set();
       const sportSet = new Set();
@@ -79,14 +72,29 @@ export const TurfNav = (prop) => {
         </div>
         <div id="midNavTurf">
           <p>IT'S ALL STARTED HERE!</p>
-           <div  style={{display: 'flex', gap: 12, alignItems: 'center'}}>
-            <Select width="180px" bg="white" color="black" aria-label="Choose location" value={city || "All"} onChange={(e)=> onCityChange ? onCityChange(e.target.value) : null}>
-              {cities.map((c) => (
-                <option key={c} value={c}>{c === 'All' ? 'All Locations' : c}</option>
-              ))}
-            </Select>
-            <MdLocationOn fontWeight={"bold"} color="white" />
-          </div>
+           <div
+  style={{
+    display: "flex",
+    gap: 12,
+    alignItems: "center",
+    width: "100%",
+    maxWidth: "560px",
+  }}
+>
+  <Input
+    placeholder="Search by turf name or location"
+    value={search || ""}
+    onChange={(e) =>
+      onSearchChange && onSearchChange(e.target.value)
+    }
+    bg="white"
+    color="black"
+    size="md"
+    borderRadius="md"
+  />
+
+  <MdLocationOn color="white" />
+</div>
         </div>
         <div id="botNavTurf">
           <p id="botNavText">
